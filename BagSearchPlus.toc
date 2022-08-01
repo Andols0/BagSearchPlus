@@ -1,0 +1,8 @@
+## Interface: 90207
+## Title: BagSearchPlus
+## Version: 9.2.7
+## Notes: Improves the search function in bags and bank.
+## Author: Andols
+## Nums made me sit up all night and do this =(
+
+Bsp.lua
