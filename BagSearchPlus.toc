@@ -5,4 +5,7 @@
 ## Author: Andols
 ## Nums made me sit up all night and do this =(
 
+## X-Curse-Project-ID: 88503
+## X-WoWI-ID: 26378
+
 Bsp.lua
