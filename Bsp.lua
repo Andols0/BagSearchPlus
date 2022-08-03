@@ -194,7 +194,6 @@ eventframe:RegisterEvent("ADDON_LOADED")
 
 
 local function eventHandler(_, _, name)
-	print(name)
 	if name == "BagSearchPlus" or  name == "ElvUI" or  name == "ArkInventory" or name == "Bagnon" then
 		Inject()
 	end
