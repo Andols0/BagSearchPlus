@@ -1,4 +1,4 @@
--- Version 9.0.2
+-- Version 9.2.7
 local ElvSearch, Match, with, Found, Inject, Extra, Skip, laststring, ilvlcompare, ilvl, ilvl2
 local Bind = {"unbound","bop","boe","",""}
 
