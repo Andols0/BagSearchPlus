@@ -107,6 +107,12 @@ local function UpdateBlizzResults(frame)
 	end
 end
 hooksecurefunc("ContainerFrame_UpdateSearchResults",UpdateBlizzResults)
+
+local function BagUpdateSearch(ID)
+	if BagItemSearchBox:GetText() ~= "" then
+		UpdateBlizzResults(_G["ContainerFrame"..ID+1])
+	end
+end
 ----------------------------------Elv UI---------------------------
 local function BSP_Elv(B)
 	function B:SetSearch(query)
@@ -176,6 +182,7 @@ local eventframe = CreateFrame("FRAME", "BspEventframe");
 
 function Inject()
 	if IsAddOnLoaded("ElvUI") then
+		eventframe:UnregisterEvent("BAG_UPDATE")
 		local E, _, _, _, _ = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 		ElvSearch = LibStub('LibItemSearch-1.2-ElvUI')
 		local B = E:GetModule('Bags')
@@ -183,19 +190,26 @@ function Inject()
 		BSP_Elv(B)
 	end
 	if IsAddOnLoaded("ArkInventory") then
+		eventframe:UnregisterEvent("BAG_UPDATE")
 		ArkInventory.Frame_Item_MatchesFilter = BSP_MatchesFilter
 	end
 	if IsAddOnLoaded("Bagnon") then
+		eventframe:UnregisterEvent("BAG_UPDATE")
 		BSP_Bagnon()
 	end
 end
 
 eventframe:RegisterEvent("ADDON_LOADED")
+eventframe:RegisterEvent("BAG_UPDATE")
 
 
-local function eventHandler(_, _, name)
-	if name == "BagSearchPlus" or  name == "ElvUI" or  name == "ArkInventory" or name == "Bagnon" then
-		Inject()
+local function eventHandler(_, event, arg1)
+	if event == "ADDON_LOADED" then
+		if arg1 == "BagSearchPlus" or  arg1 == "ElvUI" or  arg1 == "ArkInventory" or arg1 == "Bagnon" then
+			Inject()
+		end
+	elseif event == "BAG_UPDATE" then
+		BagUpdateSearch(arg1)
 	end
 end
 
