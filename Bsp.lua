@@ -1,4 +1,3 @@
--- Version 9.2.7
 local ElvSearch, Match, with, Found, Inject, Extra, Skip, laststring, ilvlcompare, ilvl, ilvl2
 local Bind = {"unbound","bop","boe","",""}
 
@@ -84,19 +83,12 @@ function BSP_Search(text,I_link)
 	end
 end
 ---------------------------------Standard UI
-
-local function UpdateBlizzResults(frame)
-	local id = frame:GetID();
-	local name = frame:GetName().."Item";
-	local itemButton, Box, iD
-	local _, isFiltered;
-	Box=strlower(BagItemSearchBox:GetText())
-	for i=1, frame.size, 1 do
-		itemButton = _G[name..i] or frame["Item"..i];
-		iD = itemButton:GetID()
-		_, _, _, _, _, _, _, isFiltered = GetContainerItemInfo(id, iD);
-		if ( isFiltered ) then
-			if not(BSP_Search(Box,GetContainerItemLink(id,iD))) then
+local function UpdateSearchResults(self)
+	for i, itemButton in self:EnumerateValidItems() do
+		local Bag, Slot = itemButton:GetBagID(), itemButton:GetID()
+		local isFiltered = select(8, GetContainerItemInfo(Bag, Slot));
+		if isFiltered then
+			if not(BSP_Search(BagItemSearchBox:GetText(),GetContainerItemLink(Bag, Slot))) then
 				itemButton:SetMatchesSearch(false)
 			else
 			itemButton:SetMatchesSearch(true)
@@ -106,8 +98,13 @@ local function UpdateBlizzResults(frame)
 		end
 	end
 end
-hooksecurefunc("ContainerFrame_UpdateSearchResults",UpdateBlizzResults)
-hooksecurefunc("ContainerFrame_Update",UpdateBlizzResults)
+
+for i = 1, 13 do
+	local frame = _G["ContainerFrame"..i]
+	hooksecurefunc(frame,"UpdateSearchResults",UpdateSearchResults)
+	hooksecurefunc(frame,"UpdateItems", UpdateSearchResults)
+end
+hooksecurefunc(ContainerFrameCombinedBags,"UpdateSearchResults", UpdateSearchResults)
 ----------------------------------Elv UI---------------------------
 local function BSP_Elv(B)
 	function B:SetSearch(query)
