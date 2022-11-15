@@ -88,13 +88,9 @@ local function UpdateSearchResults(self)
 		local Bag, Slot = itemButton:GetBagID(), itemButton:GetID()
 		local isFiltered = select(8, GetContainerItemInfo(Bag, Slot));
 		if isFiltered then
-			if not(BSP_Search(BagItemSearchBox:GetText(),GetContainerItemLink(Bag, Slot))) then
-				itemButton:SetMatchesSearch(false)
-			else
-			itemButton:SetMatchesSearch(true)
+			if BSP_Search(BagItemSearchBox:GetText(),GetContainerItemLink(Bag, Slot)) then
+				itemButton:SetMatchesSearch(true)
 			end
-		else
-			itemButton:SetMatchesSearch(true)
 		end
 	end
 end
