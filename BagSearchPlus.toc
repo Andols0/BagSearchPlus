@@ -1,6 +1,6 @@
-## Interface: 100000
+## Interface: 100002
 ## Title: BagSearchPlus
-## Version: 10.0.0-2
+## Version: 10.0.2
 ## Notes: Improves the search function in bags and bank.
 ## Author: Andols
 ## Nums made me sit up all night and do this =(

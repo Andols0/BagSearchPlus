@@ -86,9 +86,10 @@ end
 local function UpdateSearchResults(self)
 	for i, itemButton in self:EnumerateValidItems() do
 		local Bag, Slot = itemButton:GetBagID(), itemButton:GetID()
-		local isFiltered = select(8, GetContainerItemInfo(Bag, Slot));
+		local info = C_Container.GetContainerItemInfo(Bag, Slot)
+		local isFiltered = info and info.isFiltered
 		if isFiltered then
-			if BSP_Search(BagItemSearchBox:GetText(),GetContainerItemLink(Bag, Slot)) then
+			if BSP_Search(BagItemSearchBox:GetText(),C_Container.GetContainerItemLink(Bag, Slot)) then
 				itemButton:SetMatchesSearch(true)
 			end
 		end
