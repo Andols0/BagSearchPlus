@@ -84,6 +84,9 @@ function BSP_Search(text,I_link)
 end
 ---------------------------------Standard UI
 local function UpdateSearchResults(self)
+	local GetContainerItemInfo = GetContainerItemInfo or C_Container.GetContainerItemInfo
+	local GetContainerItemLink = GetContainerItemLink or C_Container.GetContainerItemLink
+	
 	for i, itemButton in self:EnumerateValidItems() do
 		local Bag, Slot = itemButton:GetBagID(), itemButton:GetID()
 		local isFiltered = select(8, GetContainerItemInfo(Bag, Slot));
