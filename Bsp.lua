@@ -2,7 +2,7 @@ local ElvSearch, Match, with, Found, Inject, Extra, Skip, laststring, ilvlcompar
 local Bind = {"unbound","bop","boe","",""}
 
 function BSP_Search(text,I_link)
-	if not(text) then return false end
+	if not(text) or not(I_link) then return false end
 	if laststring ~= text then
 		Match = {}
 		Extra = 0
@@ -83,25 +83,24 @@ function BSP_Search(text,I_link)
 	end
 end
 ---------------------------------Standard UI
-local function UpdateSearchResults(self)
-	for i, itemButton in self:EnumerateValidItems() do
-		local Bag, Slot = itemButton:GetBagID(), itemButton:GetID()
-		local info = C_Container.GetContainerItemInfo(Bag, Slot)
-		local isFiltered = info and info.isFiltered
-		if isFiltered then
-			if BSP_Search(BagItemSearchBox:GetText(),C_Container.GetContainerItemLink(Bag, Slot)) then
-				itemButton:SetMatchesSearch(true)
+local function ItemOverlay(self)
+	local SearchString = BagItemSearchBox:GetText()
+	if SearchString then
+		if self.ItemContextOverlay:IsShown() == true then
+			if BSP_Search(SearchString,C_Container.GetContainerItemLink(self:GetBagID(), self:GetID())) then
+				self.ItemContextOverlay:Hide()
 			end
 		end
 	end
 end
 
-for i = 1, 13 do
-	local frame = _G["ContainerFrame"..i]
-	hooksecurefunc(frame,"UpdateSearchResults",UpdateSearchResults)
-	hooksecurefunc(frame,"UpdateItems", UpdateSearchResults)
+for i = 1, 13 do --Bags
+	for q = 1, 36 do --ItemButtons
+		local itemframe = _G["ContainerFrame"..i.."Item"..q]
+		hooksecurefunc(itemframe,"UpdateItemContextOverlay",ItemOverlay)
+	end
 end
-hooksecurefunc(ContainerFrameCombinedBags,"UpdateSearchResults", UpdateSearchResults)
+
 ----------------------------------Elv UI---------------------------
 local function BSP_Elv(B)
 	function B:SetSearch(query)
