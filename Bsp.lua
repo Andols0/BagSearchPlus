@@ -41,16 +41,16 @@ function BSP_Search(text,I_link)
 	end
 	with = {}
 	if I_link ~= "" and I_link ~= "[]" and I_link  then
-		local I_stats = GetItemStats(I_link)
+		local I_stats = C_Item.GetItemStats(I_link)
 		if I_stats then
 			for k, _ in pairs(I_stats) do
 				table.insert(with,strlower(k))
 			end
 		end
-		local _,_,_,_,_,_,kind,_,place,_,_,_,_,bind = GetItemInfo(I_link)
+		local _,_,_,_,_,_,kind,_,place,_,_,_,_,bind = C_Item.GetItemInfo(I_link)
 		if bind then tinsert(with,Bind[bind+1]) end
 
-		local Ilvl = GetDetailedItemLevelInfo(I_link)
+		local Ilvl = C_Item.GetDetailedItemLevelInfo(I_link)
 		if kind then table.insert(with, strlower(kind)) end
 		if Ilvl then table.insert(with, Ilvl) end
 		if not(place == "") and place then table.insert(with, strlower(place)) end
@@ -94,13 +94,26 @@ local function ItemOverlay(self)
 	end
 end
 
-for i = 1, 13 do --Bags
-	for q = 1, 36 do --ItemButtons
-		local itemframe = _G["ContainerFrame"..i.."Item"..q]
-		hooksecurefunc(itemframe,"UpdateItemContextOverlay",ItemOverlay)
+local function UpdateSearch(self)
+	local SearchString = BagItemSearchBox:GetText()
+	if SearchString then
+		for _, itemButton in self:EnumerateValidItems() do
+			if itemButton.ItemContextOverlay:IsShown() == true then
+				if BSP_Search(SearchString,C_Container.GetContainerItemLink(itemButton:GetBagID(), itemButton:GetID())) then
+					itemButton.ItemContextOverlay:Hide()
+				end
+			end
+		end
 	end
 end
 
+for i = 1, 13 do --Bags
+	local containerFrame = _G["ContainerFrame"..i]
+	hooksecurefunc(containerFrame,"UpdateSearchResults",UpdateSearch)
+	hooksecurefunc(containerFrame,"UpdateItems",UpdateSearch)
+end
+hooksecurefunc(ContainerFrameCombinedBags,"UpdateItems",UpdateSearch)
+hooksecurefunc(ContainerFrameCombinedBags,"UpdateSearchResults",UpdateSearch)
 ----------------------------------Elv UI---------------------------
 local function BSP_Elv(B)
 	function B:SetSearch(query)
@@ -169,17 +182,17 @@ end
 local eventframe = CreateFrame("FRAME", "BspEventframe");
 
 function Inject()
-	if IsAddOnLoaded("ElvUI") then
+	if C_AddOns.IsAddOnLoaded("ElvUI") then
 		local E, _, _, _, _ = unpack(ElvUI); --Inport: Engine, Locales, PrivateDB, ProfileDB, GlobalDB
 		ElvSearch = LibStub('LibItemSearch-1.2-ElvUI')
 		local B = E:GetModule('Bags')
 		eventframe:UnregisterEvent("ADDON_LOADED")
 		BSP_Elv(B)
 	end
-	if IsAddOnLoaded("ArkInventory") then
+	if C_AddOns.IsAddOnLoaded("ArkInventory") then
 		ArkInventory.Frame_Item_MatchesFilter = BSP_MatchesFilter
 	end
-	if IsAddOnLoaded("Bagnon") then
+	if C_AddOns.IsAddOnLoaded("Bagnon") then
 		BSP_Bagnon()
 	end
 end
