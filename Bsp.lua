@@ -107,7 +107,7 @@ local function UpdateSearch(self)
 	end
 end
 
-for i = 1, 13 do --Bags
+for i = 1, NUM_CONTAINER_FRAMES do --Bags
 	local containerFrame = _G["ContainerFrame"..i]
 	hooksecurefunc(containerFrame,"UpdateSearchResults",UpdateSearch)
 	hooksecurefunc(containerFrame,"UpdateItems",UpdateSearch)
