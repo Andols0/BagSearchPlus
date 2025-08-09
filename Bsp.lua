@@ -107,6 +107,19 @@ local function UpdateSearch(self)
 	end
 end
 
+local function UpdateBankSearch(self)
+	local SearchString = BankItemSearchBox:GetText()
+	if SearchString then
+		for itemButton in self:EnumerateValidItems() do
+			if itemButton.ItemContextOverlay:IsShown() == true then
+				if BSP_Search(SearchString, C_Container.GetContainerItemLink(itemButton:GetBankTabID(), itemButton:GetContainerSlotID())) then
+					itemButton.ItemContextOverlay:Hide()
+				end
+			end
+		end
+	end
+end 
+
 for i = 1, NUM_CONTAINER_FRAMES do --Bags
 	local containerFrame = _G["ContainerFrame"..i]
 	hooksecurefunc(containerFrame,"UpdateSearchResults",UpdateSearch)
@@ -114,6 +127,9 @@ for i = 1, NUM_CONTAINER_FRAMES do --Bags
 end
 hooksecurefunc(ContainerFrameCombinedBags,"UpdateItems",UpdateSearch)
 hooksecurefunc(ContainerFrameCombinedBags,"UpdateSearchResults",UpdateSearch)
+
+hooksecurefunc(BankPanel, "UpdateSearchResults", UpdateBankSearch )
+hooksecurefunc(BankPanel, "SelectTab", UpdateBankSearch)
 ----------------------------------Elv UI---------------------------
 local function BSP_Elv(B)
 	function B:SetSearch(query)
