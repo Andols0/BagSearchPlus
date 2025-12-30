@@ -9,7 +9,7 @@ function BSP_Search(text,I_link)
 		ilvlcompare, ilvl, ilvl2 = nil, 0, 0
 		for word in text:gmatch("%S+") do
 			Skip = false
-if word =="gear" then
+			if word =="gear" then
 				word = "INVTYPE_[^N]"
 			end
 			if string.find(word, "+") and string.len(word) >= 3 then
@@ -85,14 +85,10 @@ if word =="gear" then
 	end
 end
 ---------------------------------Standard UI
-local function ItemOverlay(self)
-	local SearchString = BagItemSearchBox:GetText()
-	if SearchString then
-		if self.ItemContextOverlay:IsShown() == true then
-			if BSP_Search(SearchString,C_Container.GetContainerItemLink(self:GetBagID(), self:GetID())) then
-				self.ItemContextOverlay:Hide()
-			end
-		end
+
+local function CustomUpdateItemContextMatching(self)
+	if self.CustomSearchMatch then
+		self.ItemContextOverlay:Hide()
 	end
 end
 
@@ -100,10 +96,18 @@ local function UpdateSearch(self)
 	local SearchString = BagItemSearchBox:GetText()
 	if SearchString then
 		for _, itemButton in self:EnumerateValidItems() do
+			if itemButton.CustomSearchMatch == nil then --hook the function the first time the button is created
+				hooksecurefunc(itemButton,"UpdateItemContextMatching", CustomUpdateItemContextMatching)
+			end
 			if itemButton.ItemContextOverlay:IsShown() == true then
 				if BSP_Search(SearchString,C_Container.GetContainerItemLink(itemButton:GetBagID(), itemButton:GetID())) then
+					itemButton.CustomSearchMatch = true
 					itemButton.ItemContextOverlay:Hide()
+				else
+					itemButton.CustomSearchMatch = false
 				end
+			else
+				itemButton.CustomSearchMatch = false
 			end
 		end
 	end
@@ -116,11 +120,16 @@ local function UpdateBankSearch(self)
 			if itemButton.ItemContextOverlay:IsShown() == true then
 				if BSP_Search(SearchString, C_Container.GetContainerItemLink(itemButton:GetBankTabID(), itemButton:GetContainerSlotID())) then
 					itemButton.ItemContextOverlay:Hide()
+					itemButton.CustomSearchMatch = true
+				else
+					itemButton.CustomSearchMatch = false
 				end
+			else
+				itemButton.CustomSearchMatch = false
 			end
 		end
 	end
-end 
+end
 
 for i = 1, NUM_CONTAINER_FRAMES do --Bags
 	local containerFrame = _G["ContainerFrame"..i]
