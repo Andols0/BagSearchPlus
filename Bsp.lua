@@ -9,6 +9,9 @@ function BSP_Search(text,I_link)
 		ilvlcompare, ilvl, ilvl2 = nil, 0, 0
 		for word in text:gmatch("%S+") do
 			Skip = false
+if word =="gear" then
+				word = "INVTYPE_[^N]"
+			end
 			if string.find(word, "+") and string.len(word) >= 3 then
 				if ilvlcompare then
 					ilvlcompare = "r"
@@ -49,7 +52,6 @@ function BSP_Search(text,I_link)
 		end
 		local _,_,_,_,_,_,kind,_,place,_,_,_,_,bind = C_Item.GetItemInfo(I_link)
 		if bind then tinsert(with,Bind[bind+1]) end
-
 		local Ilvl = C_Item.GetDetailedItemLevelInfo(I_link)
 		if kind then table.insert(with, strlower(kind)) end
 		if Ilvl then table.insert(with, Ilvl) end
