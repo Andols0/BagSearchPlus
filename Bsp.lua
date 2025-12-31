@@ -10,7 +10,7 @@ function BSP_Search(text,I_link)
 		for word in text:gmatch("%S+") do
 			Skip = false
 			if word =="gear" then
-				word = "INVTYPE_[^N]"
+				word = "INVTYPE_...[^_]" --Punkterna är för NON som inte går att skriva i klartext
 			end
 			if string.find(word, "+") and string.len(word) >= 3 then
 				if ilvlcompare then
