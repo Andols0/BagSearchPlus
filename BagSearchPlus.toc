@@ -1,6 +1,9 @@
-## Interface: 110207
+## Interface: @toc-version-retail@
+#@debug@
+## Interface: 120100
+#@end-debug@
 ## Title: BagSearchPlus
-## Version: 11.2.7
+## Version: 12.1.0
 ## Notes: Improves the search function in bags and bank.
 ## Author: Andols
 ## Nums made me sit up all night and do this =(

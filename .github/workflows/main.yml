@@ -31,9 +31,12 @@ jobs:
 
       # we first have to clone the AddOn project, this is a required step
       - name: Clone project
-        uses: actions/checkout@v3
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0  # gets git history for changelogs
+
+      - name: Replace toc-versions
+        uses: NumyAddon/ToCVersions@v1
 
       # once cloned, we just run the GitHub Action for the packager project
       - name: Package and release
